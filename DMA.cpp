@@ -6,18 +6,18 @@ using namespace std;
 
 int main()
 {
-    DirectMemoryAccess DMA(0x40400000,0x01000000,0x01100000);
+    DirectMemoryAccess DMA(0x40000000,0x01000000,0x01100000);
 
     //On stoppe le DMA
     DMA.reset();
     DMA.halt();
 
    //Ecriture des 4 bits pour le hardware accelerator
-   DMA.writeSourceByte(0b00000000); //0
-   DMA.writeSourceByte(0b00001010); //10
-   DMA.writeSourceByte(0b00000101); //5
-   DMA.writeSourceByte(0b00000000); //0
-   DMA.writeSourceString("Hello");
+   DMA.writeSourceByte(0); //0
+   DMA.writeSourceByte(10); //10
+   DMA.writeSourceByte(5); //5
+   DMA.writeSourceByte(0); //0
+   DMA.writeSourceString("hello");
 
    //Configuration de l'interruption
    DMA.setInterrupt(true,true,0xFF);

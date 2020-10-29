@@ -13,14 +13,14 @@ int main()
     DMA.halt();
 
    //Ecriture des 4 bits pour le hardware accelerator
-   DMA.writeSource("0b00000000"); //0
-   DMA.writeSource("0b00001010"); //10
-   DMA.writeSource("0b00000101"); //5
-   DMA.writeSource("0b00000000"); //0
-   DMA.writeSource("Hello");
+   DMA.writeSourceByte(0b00000000); //0
+   DMA.writeSourceByte(0b00001010); //10
+   DMA.writeSourceByte(0b00000101); //5
+   DMA.writeSourceByte(0b00000000); //0
+   DMA.writeSourceString("Hello");
 
    //Configuration de l'interruption
-   DMA.setInterrupt(true,true,true,0xFF,10);
+   DMA.setInterrupt(true,true,0xFF);
    DMA.ready();
    
    //Configuration des adresses pour envoyer et écrire les données sur la dram

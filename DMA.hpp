@@ -19,8 +19,9 @@
 
 class DirectMemoryAccess {
     private:
+        unsigned int offset, readOffset;
         unsigned int mm2s_status, s2mm_status;
-        unsigned int *addr, *src_addr, *dst_addr;
+        unsigned long *addr, *src_addr, *dst_addr;
 
         void hexdump(void* addr, unsigned int len) {
              int i;
@@ -49,11 +50,11 @@ class DirectMemoryAccess {
         }
 
     public:
-        DirectMemoryAccess(unsigned int addr, unsigned int src_addr, unsigned int dst_addr) {
+        DirectMemoryAccess(unsigned int addr, unsigned int src_addr, unsigned int dst_addr) : offset(0) {
             int dh = open("/dev/mem", O_RDWR | O_SYNC); // Open /dev/mem which represents the whole physical memory
-            this->addr     = (unsigned int *) mmap(NULL, 65535, PROT_READ | PROT_WRITE, MAP_SHARED, dh, addr); // Memory map AXI Lite register block
-            this->src_addr = (unsigned int *) mmap(NULL, 65535, PROT_READ | PROT_WRITE, MAP_SHARED, dh, src_addr); // Memory map source address
-            this->dst_addr = (unsigned int *) mmap(NULL, 65535, PROT_READ | PROT_WRITE, MAP_SHARED, dh, dst_addr); // Memory map destination address
+            this->addr     = (unsigned long *) mmap(NULL, 65535, PROT_READ | PROT_WRITE, MAP_SHARED, dh, addr); // Memory map AXI Lite register block
+            this->src_addr = (unsigned long *) mmap(NULL, 65535, PROT_READ | PROT_WRITE, MAP_SHARED, dh, src_addr); // Memory map source address
+            this->dst_addr = (unsigned long *) mmap(NULL, 65535, PROT_READ | PROT_WRITE, MAP_SHARED, dh, dst_addr); // Memory map destination address
         }
 
         void ready() {
@@ -76,12 +77,12 @@ class DirectMemoryAccess {
             this->addr[S2MM_LENGTH >> 2] = length;
         }
 
-        void setInterrupt(bool enable_complete, bool enable_delay, bool enable_error, unsigned char threshold, unsigned char delay) {
+        void setInterrupt(bool enable_complete, bool enable_error, unsigned char threshold) {
             this->addr[S2MM_CONTROL_REGISTER >> 2] &= 0x00000fff; // Clear
-            this->addr[S2MM_CONTROL_REGISTER >> 2] |= (delay << 24) + (threshold << 16) + (enable_error << 14) + (enable_delay << 13) + (enable_complete << 12); // Set
+            this->addr[S2MM_CONTROL_REGISTER >> 2] |= /*(delay << 24) +*/ (threshold << 16) + (enable_error << 14) + /*(enable_delay << 13) +*/ (enable_complete << 12); // Set
 
             this->addr[MM2S_CONTROL_REGISTER >> 2] &= 0x00000fff; // Clear
-            this->addr[MM2S_CONTROL_REGISTER >> 2] |= (delay << 24) + (threshold << 16) + (enable_error << 14) + (enable_delay << 13) + (enable_complete << 12); // Set
+            this->addr[MM2S_CONTROL_REGISTER >> 2] |= /*(delay << 24) +*/ (threshold << 16) + (enable_error << 14) + /*(enable_delay << 13) +*/ (enable_complete << 12); // Set
         }
 
         void setSourceAddress(unsigned int addr) {
@@ -121,12 +122,40 @@ class DirectMemoryAccess {
             printf("\n");
         }
 
-        void writeSource(const char* str) {
+
+        void writeSourceByte(char c) {
+            char *p = (char *) this->src_addr;
+            p[this->offset] = c;
+            this->offset++;
+        }
+        void writeSourceString(const char* str) {
             char *p = (char *) this->src_addr;
             unsigned int i, length = strlen(str);
             for (i = 0; i < length; i++) {
-                p[i] = str[i];
+                p[this->offset + i] = str[i];
             }
+            this->offset += length;
+        }
+        void writeSourceInteger(unsigned int i) {
+            this->src_addr[this->offset/4] = i;
+            this->offset += 4;
+        }
+        void writeSourceLong(unsigned long i) {
+            this->src_addr[this->offset/4] = i;
+            this->offset += 4;
+        }
+        unsigned long readDestLong() {
+            unsigned long i = this->dst_addr[this->readOffset/4];
+            this->readOffset += 4; 
+            return i;
+        }
+
+        void resetCursor() {
+            this->offset = 0;
+        }
+
+        void resetReadCursor() {
+            this->readOffset = 0;
         }
 };
 

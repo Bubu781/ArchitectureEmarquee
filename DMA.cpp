@@ -4,9 +4,9 @@
 #include <iostream>
 using namespace std;
 
-#define DMAREGISTER 0x40400000
-#define MM2S 0x01000000
-#define S2MM 0x01100000
+#define DMAREGISTER 0x60000000
+#define MM2S 0x70000000
+#define S2MM 0x80000000
 
 int main()
 {
@@ -21,7 +21,7 @@ int main()
    DMA.writeSourceByte(10); //10
    DMA.writeSourceByte(5); //5
    DMA.writeSourceByte(0); //0
-   DMA.writeSourceString("hello");
+   DMA.writeSourceString("salut");
 
    //Configuration de l'interruption
    DMA.setInterrupt(true,true,0xFF);

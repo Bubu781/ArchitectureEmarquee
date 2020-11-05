@@ -17,7 +17,7 @@ int main()
    DMA.writeSourceByte(0b00001010); //10
    DMA.writeSourceByte(0b00000101); //5
    DMA.writeSourceByte(0b00000000); //0
-   DMA.writeSourceString("Hello");
+   DMA.writeSourceString("hello");
 
    //Configuration de l'interruption
    DMA.setInterrupt(true,true,0xFF);

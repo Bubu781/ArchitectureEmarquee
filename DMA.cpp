@@ -4,9 +4,13 @@
 #include <iostream>
 using namespace std;
 
+#define DMAREGISTER 0x40400000
+#define MM2S 0x01000000
+#define S2MM 0x01100000
+
 int main()
 {
-    DirectMemoryAccess DMA(0x40000000,0x01000000,0x01100000);
+    DirectMemoryAccess DMA(DMAREGISTER,MM2S,S2MM);
 
     //On stoppe le DMA
     DMA.reset();
@@ -24,8 +28,8 @@ int main()
    DMA.ready();
    
    //Configuration des adresses pour envoyer et écrire les données sur la dram
-   DMA.setSourceAddress(0x01000000);
-   DMA.setDestinationAddress(0x01100000);
+   DMA.setSourceAddress(MM2S);
+   DMA.setDestinationAddress(S2MM);
    
-return 0;
+    return 0;
 }

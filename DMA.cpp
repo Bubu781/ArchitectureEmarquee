@@ -4,9 +4,9 @@
 #include <iostream>
 using namespace std;
 
-#define DMAREGISTER 0x60000000
-#define MM2S 0x70000000
-#define S2MM 0x80000000
+#define DMAREGISTER 0x40400000
+#define MM2S 0x0e000000
+#define S2MM 0x0f000000
 
 int main()
 {
@@ -16,20 +16,35 @@ int main()
     DMA.reset();
     DMA.halt();
 
-   //Ecriture des 4 bits pour le hardware accelerator
-   DMA.writeSourceByte(0); //0
-   DMA.writeSourceByte(10); //10
-   DMA.writeSourceByte(5); //5
-   DMA.writeSourceByte(0); //0
-   DMA.writeSourceString("salut");
+    //Ecriture des 4 bits pour le hardware accelerator
+    DMA.writeSourceByte(0); //0
+    DMA.writeSourceByte(10); //10
+    DMA.writeSourceByte(5); //5
+    DMA.writeSourceByte(0); //0
+    DMA.writeSourceString("hello");
 
-   //Configuration de l'interruption
-   DMA.setInterrupt(true,true,0xFF);
-   DMA.ready();
-   
-   //Configuration des adresses pour envoyer et écrire les données sur la dram
-   DMA.setSourceAddress(MM2S);
-   DMA.setDestinationAddress(S2MM);
-   
+    //Configuration de l'interruption
+    DMA.setInterrupt(true,true,0xFF);
+    DMA.ready();
+
+    DMA.setSourceLength(9);
+    DMA.setDestinationLength(5);
+    //Configuration des adresses pour envoyer et écrire les données sur la dram
+    DMA.setSourceAddress(MM2S);
+    DMA.setDestinationAddress(S2MM);
+
+    //SOURCE
+    do{
+        status = DMA.getMM2SStatus();
+        DMA.dumpStatus(status);
+    }while(!(status & 1 << 1) && !(status & 1 << 12));
+    //DEST
+    do{
+        status = DMA.getS2MMStatus();
+        DMA.dumpStatus(status);
+    }while(!(status & 1 << 1) && !(status & 1 << 12));
+
+    DMA.hexdumpSource(9);
+    DMA.hexdumpDestination(5);
     return 0;
 }

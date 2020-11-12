@@ -27,11 +27,11 @@ int main()
     DMA.setInterrupt(true,true,0xFF);
     DMA.ready();
 
-    DMA.setSourceLength(9);
-    DMA.setDestinationLength(5);
     //Configuration des adresses pour envoyer et écrire les données sur la dram
     DMA.setSourceAddress(MM2S);
     DMA.setDestinationAddress(S2MM);
+    DMA.setDestinationLength(5);
+    DMA.setSourceLength(9);
 
     //SOURCE
     do{

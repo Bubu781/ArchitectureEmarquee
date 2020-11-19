@@ -1,0 +1,7 @@
+1) commande de cross-compilation
+
+arm-linux-gnueabi-g++-8 DMA.cpp -o prog
+
+
+2)
+il faut mettre le binaire cross-compilé dans la partie root de la carte SD

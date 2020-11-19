@@ -32,8 +32,8 @@ int main()
     //Configuration des adresses pour envoyer et écrire les données sur la dram
     DMA.setSourceAddress(MM2S);
     DMA.setDestinationAddress(S2MM);
-    DMA.setDestinationLength(5);
-    DMA.setSourceLength(9);
+    DMA.setDestinationLength(10);
+    DMA.setSourceLength(10);
 
     //SOURCE
     do{
@@ -46,7 +46,7 @@ int main()
         DMA.dumpStatus(status);
     }while(!(status & 1 << 1) && !(status & 1 << 12));
 
-    DMA.hexdumpSource(9);
-    DMA.hexdumpDestination(5);
+    DMA.hexdumpSource(10);
+    DMA.hexdumpDestination(10);
     return 0;
 }

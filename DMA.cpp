@@ -17,12 +17,14 @@ int main()
     DMA.halt();
 
     //Ecriture des 4 bits pour le hardware accelerator
-    DMA.writeSourceByte(0); //0
-    DMA.writeSourceByte(10); //10
-    DMA.writeSourceByte(5); //5
-    DMA.writeSourceByte(0); //0
-    DMA.writeSourceString("hello");
-
+    // DMA.writeSourceByte(0); //0
+    // DMA.writeSourceByte(10); //10
+    // DMA.writeSourceByte(5); //5
+    // DMA.writeSourceByte(0); //0
+    // DMA.writeSourceString("hello");
+    for(int i = 0; i < 10; i++){
+        DMA.writeSourceByte(i);
+    }
     //Configuration de l'interruption
     DMA.setInterrupt(true,true,0xFF);
     DMA.ready();

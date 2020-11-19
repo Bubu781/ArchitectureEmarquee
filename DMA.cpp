@@ -23,7 +23,7 @@ int main()
     // DMA.writeSourceByte(0); //0
     // DMA.writeSourceString("hello");
     for(int i = 0; i < 10; i++){
-        DMA.writeSourceByte(i);
+        DMA.writeSourceInteger(i);
     }
     //Configuration de l'interruption
     DMA.setInterrupt(true,true,0xFF);

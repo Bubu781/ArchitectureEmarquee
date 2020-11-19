@@ -11,12 +11,14 @@ using namespace std;
 int main()
 {
     DirectMemoryAccess DMA(DMAREGISTER,MM2S,S2MM);
+    unsigned int status=0;
 
     //On stoppe le DMA
     DMA.reset();
     DMA.halt();
 
     //Ecriture des 4 bits pour le hardware accelerator
+
     // DMA.writeSourceByte(0); //0
     // DMA.writeSourceByte(10); //10
     // DMA.writeSourceByte(5); //5
@@ -25,6 +27,7 @@ int main()
     for(int i = 0; i < 10; i++){
         DMA.writeSourceInteger(i);
     }
+    
     //Configuration de l'interruption
     DMA.setInterrupt(true,true,0xFF);
     DMA.ready();

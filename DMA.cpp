@@ -16,17 +16,20 @@ int main()
     //On stoppe le DMA
     DMA.reset();
     DMA.halt();
-
-    //Ecriture des 4 bits pour le hardware accelerator
-
-    // DMA.writeSourceByte(0); //0
-    // DMA.writeSourceByte(10); //10
-    // DMA.writeSourceByte(5); //5
-    // DMA.writeSourceByte(0); //0
-    // DMA.writeSourceString("hello");
-    for(int i = 0; i < 10; i++){
-        DMA.writeSourceInteger(i);
-    }
+    unsigned int blackImg[4][4], whiteImg[4][4];
+    //On remplit les tableaux 
+    for(unsigned int i = 0; i < 4; i++)
+        for(unsigned int j = 0; j < 4; j++){
+            blackImg[i][j] = 0;
+            whiteImg[i][j] = 255;
+        }
+    //On envoie un tableau noir
+    for(unsigned int i = 0; i < 4; i++)
+        for(unsigned int j = 0; j < 4; j++){
+            DMA.writeSourceByte(blackImg[i][j]);
+            DMA.writeSourceByte(whiteImg[i][j]);
+        }
+    
     
     //Configuration de l'interruption
     DMA.setInterrupt(true,true,0xFF);
@@ -35,13 +38,10 @@ int main()
     //Configuration des adresses pour envoyer et écrire les données sur la dram
     DMA.setSourceAddress(MM2S);
     DMA.setDestinationAddress(S2MM);
-    DMA.setDestinationLength(40);
-    DMA.setSourceLength(40);
+    DMA.setDestinationLength(32);
+    DMA.setSourceLength(16);
 
     //SOURCE
-    for(int i = 0; i < 10; i++){
-        DMA.dumpStatus(i);
-    }
     do{
         status = DMA.getMM2SStatus();
         DMA.dumpStatus(status);
@@ -52,7 +52,7 @@ int main()
         DMA.dumpStatus(status);
     }while(!(status & 1 << 1) && !(status & 1 << 12));
 
-    DMA.hexdumpSource(40);
-    DMA.hexdumpDestination(40);
+    DMA.hexdumpSource(32);
+    DMA.hexdumpDestination(16);
     return 0;
 }

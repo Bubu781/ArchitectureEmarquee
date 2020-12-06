@@ -17,7 +17,7 @@ void​ ​hardware_accelerator​(ap_axi IN[32], ap_axi OUT[16]){
     int j=0;
     for​(​int​ i=​1; i<32; i+=2) {
         // Add a value to the initial data and send it back to the DMA
-        OUT[j].data = (IN[i].data + ​IN[i-1].data)/2​;
+        OUT[j].data = (ap_int) (IN[i].data + ​IN[i-1].data)/2​;
         ​// Always copy keep signal from input so you
         // do not have to manage it
         OUT[j].keep = IN[i].keep;

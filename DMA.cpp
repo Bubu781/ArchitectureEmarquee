@@ -26,8 +26,8 @@ int main()
     //On envoie un tableau noir
     for(unsigned int i = 0; i < 4; i++)
         for(unsigned int j = 0; j < 4; j++){
-            DMA.writeSourceByte(blackImg[i][j]);
-            DMA.writeSourceByte(whiteImg[i][j]);
+            DMA.writeSourceInteger(blackImg[i][j]);
+            DMA.writeSourceInteger(whiteImg[i][j]);
         }
     
     

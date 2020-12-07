@@ -11,26 +11,25 @@ typedef​ ​struct​ ​ap_axi​ {
 void​ ​hardware_accelerator​(ap_axi IN[32], ap_axi OUT[16]){
     // Define RTL interface
     // "HLS INTERFACE AXIS" define an AXI-Stream bus
-
     #pragma HLS INTERFACE AXIS port=IN
     // "HLS INTERFACE AXIS" define an AXI-Stream bus
     #pragma HLS INTERFACE AXIS port=OUT
     int j=0;
-    ap_int<​32​> in_values[32];
+    ap_int<32> value;
     for​(​int​ i=​0; i<32; i++) {
-        in_values[i] = IN[i].data;
-        ​// Always copy keep signal from input so you
-        // do not have to manage it
-        if(i < 16){
-            OUT[i].keep = IN[i].keep;
+        if(i % 2 == 0){
+            value = IN[i].data;
+        }else{
+            // Add a value to the initial data and send it back to the DMA
+            OUT[j].data = (ap_int) (IN[i].data + value)/2​;
+            ​// Always copy keep signal from input so you
+            // do not have to manage it
+            OUT[j].keep = IN[i].keep;
             ​// Always copy last signal from input so you
             // do not have to manage it
-            OUT[i].last = IN[i].last;
+            OUT[j].last = IN[i].last;
+            j++;
         }
-    }
-    for(int i=1; i < 32; i+= 2){
-        // Add a value to the initial data and send it back to the DMA
-        OUT[j].data = (ap_int) (in_values[i] + in_values[i-1])/2​;
-        j++;
-    }
+        
+    } 
 }

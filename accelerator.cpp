@@ -15,13 +15,21 @@ void​ ​hardware_accelerator​(ap_axi IN[8], ap_axi OUT[4]){
     // "HLS INTERFACE AXIS" define an AXI-Stream bus
     #pragma HLS INTERFACE AXIS port=OUT
     int j=0;
-    ap_uint<32> value;
+    ap_uint<32> value, value1, value2;
     for​(​int​ i=​0; i<8; i++) {
+        int val1 = (IN[i].data & 0xFF000000) >> 24;
+        int val2 = (IN[i].data & 0x00FF0000) >> 16;
+        int val3 = (IN[i].data & 0x0000FF00) >> 8;
+        int val4 = (IN[i].data & 0x000000FF);
         if(i % 2 == 0){
-            value = IN[i].data;
+            value1 = (ap_uint<32>) (val1 + val2)/2​;
+            value2 = (ap_uint<32>) (val3 + val4)/2​;
+            value = value1 << 24 | value2 << 16;
         }else{
+            value1 = (ap_uint<32>) (val1 + val2)/2​;
+            value2 = (ap_uint<32>) (val3 + val4)/2​;
             // Add a value to the initial data and send it back to the DMA
-            OUT[j].data = (ap_uint<32>) (IN[i].data + value)/2​;
+            OUT[j].data = value | value1 << 8 | value2​;
             ​// Always copy keep signal from input so you
             // do not have to manage it
             OUT[j].keep = IN[i].keep;
@@ -30,6 +38,5 @@ void​ ​hardware_accelerator​(ap_axi IN[8], ap_axi OUT[4]){
             OUT[j].last = IN[i].last;
             j++;
         }
-        
     } 
 }

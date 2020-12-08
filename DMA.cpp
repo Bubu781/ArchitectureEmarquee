@@ -26,7 +26,7 @@ int main()
     //On envoie un tableau noir
     for(unsigned int i = 0; i < 4; i++)
         for(unsigned int j = 1; j < 4; j+=2){
-            DMA.writeSourceInteger(blackImg[i][j-1] << 24 + whiteImg[i][j-1] << 16 + blackImg[i][j] << 8 + whiteImg[i][j]);
+            DMA.writeSourceInteger(blackImg[i][j-1] << 24 | whiteImg[i][j-1] << 16 | blackImg[i][j] << 8 | whiteImg[i][j]);
         }
     
     //Configuration de l'interruption
@@ -36,8 +36,8 @@ int main()
     //Configuration des adresses pour envoyer et écrire les données sur la dram
     DMA.setSourceAddress(MM2S);
     DMA.setDestinationAddress(S2MM);
-    DMA.setDestinationLength(32);
-    DMA.setSourceLength(16);
+    DMA.setDestinationLength(8);
+    DMA.setSourceLength(4);
 
     //SOURCE
     do{
@@ -50,7 +50,7 @@ int main()
         DMA.dumpStatus(status);
     }while(!(status & 1 << 1) && !(status & 1 << 12));
 
-    DMA.hexdumpSource(32);
-    DMA.hexdumpDestination(16);
+    DMA.hexdumpSource(8);
+    DMA.hexdumpDestination(4);
     return 0;
 }

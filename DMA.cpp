@@ -16,13 +16,14 @@ int main()
     //On stoppe le DMA
     DMA.reset();
     DMA.halt();
-    unsigned int blackImg[4][4], whiteImg[4][4];
-    //On remplit les tableaux 
-    for(unsigned int i = 0; i < 4; i++)
-        for(unsigned int j = 0; j < 4; j++){
-            blackImg[i][j] = 0;
-            whiteImg[i][j] = 255;
-        }
+    unsigned int blackImg[4][4] = {0x0,0x0,0x0,0x0,
+                                   0x0,0x0,0x0,0x0,
+                                   0x0,0x0,0x0,0x0,
+                                   0x0,0x0,0x0,0x0};
+    unsigned int whiteImg[4][4] = {0xFF,0xFF,0xFF,0xFF,
+                                   0xFF,0xFF,0xFF,0xFF,
+                                   0xFF,0xFF,0xFF,0xFF,
+                                   0xFF,0xFF,0xFF,0xFF};
     //On envoie un tableau noir
     for(unsigned int i = 0; i < 4; i++)
         for(unsigned int j = 1; j < 4; j+=2){

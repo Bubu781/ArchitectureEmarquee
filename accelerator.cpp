@@ -14,21 +14,24 @@ void​ ​hardware_accelerator​(ap_axi IN[8], ap_axi OUT[4]){
     #pragma HLS INTERFACE AXIS port=IN
     // "HLS INTERFACE AXIS" define an AXI-Stream bus
     #pragma HLS INTERFACE AXIS port=OUT
-    int j=0, val1, val2, val3, val4;
+    int j=0;
     ap_uint<32> value, value1, value2;
+    ap_uint<32> val1, val2, val3, val4;
     for​(​int​ i=​0; i<8; i++) {
+        // Apply a mask to have 4 distincts pixels
         val1 = (IN[i].data & 0xFF000000) >> 24;
         val2 = (IN[i].data & 0x00FF0000) >> 16;
         val3 = (IN[i].data & 0x0000FF00) >> 8;
         val4 = (IN[i].data & 0x000000FF);
+        // Calculate the average of the pixels at the same position
+        value1 = (ap_uint<32>) (val1 + val2)/2​;
+        value2 = (ap_uint<32>) (val3 + val4)/2​;
         if(i % 2 == 0){
-            value1 = (ap_uint<32>) (val1 + val2)/2​;
-            value2 = (ap_uint<32>) (val3 + val4)/2​;
-            value = (value1 << 24 | value2 << 16) & 0xFFFF0000;
+            //We set the first 2 new pixels calculated
+            value = (ap_uint<32>) (value1 << 24 | value2 << 16);
         }else{
-            value1 = (ap_uint<32>) ((val1 + val2)/2​) & 0x000000FF;
-            value2 = (ap_uint<32>) ((val3 + val4)/2​) & 0x000000FF;
             // Add a value to the initial data and send it back to the DMA
+            // We send 4 new pixels 
             OUT[j].data = (ap_uint<32>) value | value1 << 8 | value2​;
             ​// Always copy keep signal from input so you
             // do not have to manage it

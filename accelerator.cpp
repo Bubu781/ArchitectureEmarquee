@@ -28,10 +28,10 @@ void​ ​hardware_accelerator​(ap_axi IN[8], ap_axi OUT[4]){
             OUT[j].data = (ap_uint<32>) (value << 16 | (((((IN[i].data & 0xFF000000) >> 24) + ((IN[i].data & 0xFF0000) >> 16))/2) << 8 | ((((IN[i].data & 0xFF00) >> 8) + (IN[i].data & 0xFF))/2)));
             ​// Always copy keep signal from input so you
             // do not have to manage it
-            OUT[j].keep = IN[j].keep;
+            OUT[j].keep = IN[i].keep;
             ​// Always copy last signal from input so you
             // do not have to manage it
-            OUT[j].last = IN[j].last;
+            OUT[j].last = IN[i].last;
             j++;
         }
     } 

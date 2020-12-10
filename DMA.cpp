@@ -26,9 +26,10 @@ int main()
                                    0xFF,0xFF,0xFF,0xFF};
     //On envoie un tableau noir
     for(unsigned int i = 0; i < 4; i++)
-        for(unsigned int j = 1; j < 4; j+=2)
-            DMA.writeSourceInteger((unsigned int) (blackImg[i][j-1] << 24 | whiteImg[i][j-1] << 16 | blackImg[i][j] << 8 | whiteImg[i][j]));
-
+        for(unsigned int j = 0; j < 4; j++){
+            DMA.writeSourceByte(blackImg[i][j]);
+            DMA.writeSourceByte(whiteImg[i][j]);
+        }
     //Configuration de l'interruption
     DMA.setInterrupt(true,true,0xFF);
     DMA.ready();

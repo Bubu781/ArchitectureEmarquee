@@ -17,8 +17,12 @@ void​ ​hardware_accelerator​(ap_axi IN[8], ap_axi OUT[4]){
     unsigned short int  j=0;
     ap_uint<32> value;
     ap_uint<32> data;
+    ap_uint<​4​> keep;​ 
+    ap_uint<​1​> last;
     for​(unsigned short int i=​0; i<8; i++) {
         data = IN[i].data;
+        keep = IN[i].keep;
+        last = IN[i].last;
         if(i % 2 == 0){
             // Apply a mask to have 4 distincts pixels
             // Calculate the average of the pixels at the same position
@@ -30,10 +34,10 @@ void​ ​hardware_accelerator​(ap_axi IN[8], ap_axi OUT[4]){
             OUT[j].data = (ap_uint<32>) (value << 16 | (((((data & 0xFF000000) >> 24) + ((data & 0xFF0000) >> 16))/2) << 8 | ((((data & 0xFF00) >> 8) + (data & 0xFF))/2)));
             ​// Always copy keep signal from input so you
             // do not have to manage it
-            OUT[j].keep = IN[i].keep;
+            OUT[j].keep = keep;
             ​// Always copy last signal from input so you
             // do not have to manage it
-            OUT[j].last = IN[i].last;
+            OUT[j].last = last;
             j++;
         }
     } 

@@ -30,19 +30,13 @@ int main(){
 }
 
 void accelerator(ap_axi IN[8], ap_axi OUT[4]){
-    uint32_t value, value1, value2;
+    uint32_t value;
     int j = 0;
     for(int i = 0; i < 8; i++){
-        printf("0x%x\n", IN[i].data);
-        value1 = (uint32_t) (((IN[i].data & 0xFF000000) >> 24) + ((IN[i].data & 0xFF0000) >> 16))/2;
-        value2 = (uint32_t) (((IN[i].data & 0xFF00) >> 8) + (IN[i].data & 0xFF))/2;
-        printf("0x%x 0x%x\n\n", value1, value2);
         if(i % 2 == 0){
-            value = (uint32_t) (value1 << 24 | value2 << 16);
-            printf("premiere val : 0x%x\n", value);
+            value = (uint32_t) (((((IN[i].data & 0xFF000000) >> 24) + ((IN[i].data & 0xFF0000) >> 16))/2) << 8 | ((((IN[i].data & 0xFF00) >> 8) + (IN[i].data & 0xFF))/2));
         }else{
-            OUT[j].data = (uint32_t) (value | value1 << 8 | value2);
-            printf("deuxieme val : 0x%x\n", OUT[j].data);
+            OUT[j].data = (uint32_t) (value << 16 | (((((IN[i].data & 0xFF000000) >> 24) + ((IN[i].data & 0xFF0000) >> 16))/2) << 8 | ((((IN[i].data & 0xFF00) >> 8) + (IN[i].data & 0xFF))/2)));
             j++;
         }
     }

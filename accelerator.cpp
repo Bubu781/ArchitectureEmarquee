@@ -19,6 +19,7 @@ void​ ​hardware_accelerator​(ap_axi IN[8], ap_axi OUT[4]){
     ap_uint<32> data;
     ap_uint<​4​> keep;​ 
     ap_uint<​1​> last;
+    ap_axi output;
     for​(unsigned short int i=​0; i<8; i++) {
         data = IN[i].data;
         keep = IN[i].keep;
@@ -31,13 +32,14 @@ void​ ​hardware_accelerator​(ap_axi IN[8], ap_axi OUT[4]){
         }else{
             // Add a value to the initial data and send it back to the DMA
             // We send 4 new pixels 
-            OUT[j].data = (ap_uint<32>) (value << 16 | (((((data & 0xFF000000) >> 24) + ((data & 0xFF0000) >> 16))/2) << 8 | ((((data & 0xFF00) >> 8) + (data & 0xFF))/2)));
+            output.data = (ap_uint<32>) (value << 16 | (((((data & 0xFF000000) >> 24) + ((data & 0xFF0000) >> 16))/2) << 8 | ((((data & 0xFF00) >> 8) + (data & 0xFF))/2)));
             ​// Always copy keep signal from input so you
             // do not have to manage it
-            OUT[j].keep = keep;
+            output.keep = keep;
             ​// Always copy last signal from input so you
             // do not have to manage it
-            OUT[j].last = last;
+            output.last = last;
+            OUT[j] = output;
             j++;
         }
     } 

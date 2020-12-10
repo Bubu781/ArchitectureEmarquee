@@ -14,9 +14,9 @@ void​ ​hardware_accelerator​(ap_axi IN[8], ap_axi OUT[4]){
     #pragma HLS INTERFACE AXIS port=IN
     // "HLS INTERFACE AXIS" define an AXI-Stream bus
     #pragma HLS INTERFACE AXIS port=OUT
-    ap_uint<​2​> j=0;
+    unsigned short int  j=0;
     ap_uint<32> value;
-    for​(ap_uint<​3> i=​0; i<8; i++) {
+    for​(unsigned short int i=​0; i<8; i++) {
         if(i % 2 == 0){
             // Apply a mask to have 4 distincts pixels
             // Calculate the average of the pixels at the same position
@@ -28,10 +28,10 @@ void​ ​hardware_accelerator​(ap_axi IN[8], ap_axi OUT[4]){
             OUT[j].data = (ap_uint<32>) (value << 16 | (((((IN[i].data & 0xFF000000) >> 24) + ((IN[i].data & 0xFF0000) >> 16))/2) << 8 | ((((IN[i].data & 0xFF00) >> 8) + (IN[i].data & 0xFF))/2)));
             ​// Always copy keep signal from input so you
             // do not have to manage it
-            OUT[j].keep = IN[i].keep;
+            OUT[j].keep = IN[j].keep;
             ​// Always copy last signal from input so you
             // do not have to manage it
-            OUT[j].last = IN[i].last;
+            OUT[j].last = IN[j].last;
             j++;
         }
     } 

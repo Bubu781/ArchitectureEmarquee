@@ -16,15 +16,17 @@ int main()
     //On stoppe le DMA
     DMA.reset();
     DMA.halt();
+    //On crée une première image blanche
     unsigned int blackImg[4][4] = {0x0,0x0,0x0,0x0,
                                    0x0,0x0,0x0,0x0,
                                    0x0,0x0,0x0,0x0,
                                    0x0,0x0,0x0,0x0};
+    //On crée une seconde image noire
     unsigned int whiteImg[4][4] = {0xFF,0xFF,0xFF,0xFF,
                                    0xFF,0xFF,0xFF,0xFF,
                                    0xFF,0xFF,0xFF,0xFF,
                                    0xFF,0xFF,0xFF,0xFF};
-    //On envoie un tableau noir
+    //On envoie les deux tableaux pixel par pixel, en alternant les deux images
     for(unsigned int i = 0; i < 4; i++)
         for(unsigned int j = 0; j < 4; j++){
             DMA.writeSourceByte(blackImg[i][j]);
@@ -37,7 +39,9 @@ int main()
     //Configuration des adresses pour envoyer et écrire les données sur la dram
     DMA.setSourceAddress(MM2S);
     DMA.setDestinationAddress(S2MM);
+    //On envoie 2 tableaux qui font une taille de 4x4 bytes, soit deux tableaux de 16 octets pour un total de 32 octets
     DMA.setSourceLength(32);
+    //On reçoit une fusion des deux tableaux, soit un unique tableau de 4x4 bytes, donc 16 octets
     DMA.setDestinationLength(16);
 
     //SOURCE

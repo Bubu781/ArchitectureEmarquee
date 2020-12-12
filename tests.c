@@ -30,13 +30,20 @@ int main(){
 }
 
 void accelerator(ap_axi IN[8], ap_axi OUT[4]){
-    uint32_t value;
+    uint32_t value, value1, value2;
+    uint8_t val1, val2, val3, val4;
     int j = 0;
     for(int i = 0; i < 8; i++){
+        val1 = (IN[i].data & 0xFF000000) >> 24;
+        val2 = (IN[i].data & 0xFF0000) >> 16;
+        val3 = (IN[i].data & 0xFF00) >> 8;
+        val4 = IN[i].data & 0xFF;
+        value1 = ( val1 + val2 )/2;
+        value2 = ( val3 + val4 )/2;
         if(i % 2 == 0){
-            value = (uint32_t) (((((IN[i].data & 0xFF000000) >> 24) + ((IN[i].data & 0xFF0000) >> 16))/2) << 8 | ((((IN[i].data & 0xFF00) >> 8) + (IN[i].data & 0xFF))/2));
+            value = (uint32_t) ( value1 << 8 | value2 );
         }else{
-            OUT[j].data = (uint32_t) (value << 16 | (((((IN[i].data & 0xFF000000) >> 24) + ((IN[i].data & 0xFF0000) >> 16))/2) << 8 | ((((IN[i].data & 0xFF00) >> 8) + (IN[i].data & 0xFF))/2)));
+            OUT[j].data = (uint32_t) (value << 16 | value1 << 8 | value2 );
             j++;
         }
     }
